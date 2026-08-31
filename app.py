@@ -1,4 +1,4 @@
-# app.py - Main Router with Persistent Test Mode Switcher
+# app.py - Main Router with Conditional Test Mode Switcher
 import streamlit as st
 
 import database as db
@@ -20,7 +20,7 @@ st.markdown(
 )
 
 for key, default in [
-    ("logged_in_user", db.users["att1"]),
+    ("logged_in_user", db.users["att1"]),  # Default to demo attendee on fresh load
     ("user_role", "Attendee"),
     ("last_booking_success", None),
     ("nav_choice", "🔥 Explore Events"),
@@ -29,24 +29,31 @@ for key, default in [
     if key not in st.session_state:
         st.session_state[key] = default
 
-# --- Always Accessible Test Mode Switcher in Sidebar ---
-st.sidebar.markdown("### 🛠️ Test Mode Role Switcher")
-current_role_index = 0 if st.session_state["user_role"] == "Attendee" else 1
-selected_role = st.sidebar.radio("Switch Role As:", ["Attendee", "Organiser"], index=current_role_index, key="role_switcher")
+current_user = st.session_state.get("logged_in_user")
 
-if selected_role == "Attendee" and st.session_state["user_role"] == "Organiser":
-    st.session_state["logged_in_user"] = db.users["att1"]
-    st.session_state["user_role"] = "Attendee"
-    st.session_state["nav_choice"] = "🔥 Explore Events"
-    st.rerun()
-elif selected_role == "Organiser" and st.session_state["user_role"] == "Attendee":
-    st.session_state["logged_in_user"] = db.users["org1"]
-    st.session_state["user_role"] = "Organiser"
-    st.session_state["nav_choice"] = "📊 Dashboard & Manage"
-    st.rerun()
+# --- Conditional Test Mode Switcher ---
+# Only show the test switcher if no custom user is logged in, 
+# or if it's explicitly using one of the default mock accounts ("att1" / "org1")
+is_default_test_user = current_user and current_user.user_id in ["att1", "org1"]
+
+if not current_user or is_default_test_user:
+    st.sidebar.markdown("### 🛠️ Test Mode Role Switcher")
+    current_role_index = 0 if st.session_state["user_role"] == "Attendee" else 1
+    selected_role = st.sidebar.radio("Switch Role As:", ["Attendee", "Organiser"], index=current_role_index, key="role_switcher")
+
+    if selected_role == "Attendee" and st.session_state["user_role"] == "Organiser":
+        st.session_state["logged_in_user"] = db.users["att1"]
+        st.session_state["user_role"] = "Attendee"
+        st.session_state["nav_choice"] = "🔥 Explore Events"
+        st.rerun()
+    elif selected_role == "Organiser" and st.session_state["user_role"] == "Attendee":
+        st.session_state["logged_in_user"] = db.users["org1"]
+        st.session_state["user_role"] = "Organiser"
+        st.session_state["nav_choice"] = "📊 Dashboard & Manage"
+        st.rerun()
 
 # If explicitly logged out or cleared, show auth view
-if not st.session_state["logged_in_user"]:
+if not current_user:
     auth.render_login_register()
 else:
     menu = (
