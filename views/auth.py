@@ -27,6 +27,11 @@ def render_login_register():
                             if isinstance(u, db.EventOrganiser)
                             else "Attendee"
                         )
+                        st.session_state["nav_choice"] = (
+                            "📊 Dashboard & Manage"
+                            if st.session_state["user_role"] == "Organiser"
+                            else "🔥 Explore Events"
+                        )
                         authenticated = True
                         st.success("Authentication successful! Redirecting...")
                         st.rerun()
@@ -42,7 +47,7 @@ def render_login_register():
         r_pass = c3.text_input("Reg Pass", type="password", key="r_pass")
         r_role = c4.selectbox("Role", ["Attendee", "Organiser"], key="r_role")
 
-        if st.button("Register Account", use_container_width=True):
+        if st.button("Register Account", use_container_width=True, key="btn_register"):
             if not r_name or not r_email or not r_pass:
                 st.error("Error: Required fields cannot be empty.")
             elif any(u.email == r_email for u in db.users.values()):
@@ -59,6 +64,9 @@ def render_login_register():
                 db.users[u_id] = new_u
                 st.session_state["logged_in_user"] = new_u
                 st.session_state["user_role"] = r_role
+                st.session_state["nav_choice"] = (
+                    "📊 Dashboard & Manage" if r_role == "Organiser" else "🔥 Explore Events"
+                )
                 st.success("Account successfully created!")
                 st.rerun()
 
@@ -66,7 +74,7 @@ def render_login_register():
 def logout():
     st.session_state["logged_in_user"] = None
     st.session_state["user_role"] = None
-    st.session_state["nav"] = "🔥 Explore Events"
+    st.session_state["nav_choice"] = "🔥 Explore Events"
     if "form_tiers" in st.session_state:
         del st.session_state["form_tiers"]
     st.rerun()

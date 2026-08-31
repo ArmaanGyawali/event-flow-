@@ -20,10 +20,11 @@ st.markdown(
 )
 
 for key, default in [
-    ("logged_in_user", db.users["att1"]),  # Default to attendee on fresh load
+    ("logged_in_user", db.users["att1"]),
     ("user_role", "Attendee"),
     ("last_booking_success", None),
-    ("nav", "🔥 Explore Events"),
+    ("nav_choice", "🔥 Explore Events"),
+    ("redirect_to_bookings", False),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -31,17 +32,17 @@ for key, default in [
 # --- Always Accessible Test Mode Switcher in Sidebar ---
 st.sidebar.markdown("### 🛠️ Test Mode Role Switcher")
 current_role_index = 0 if st.session_state["user_role"] == "Attendee" else 1
-selected_role = st.sidebar.radio("Switch Role As:", ["Attendee", "Organiser"], index=current_role_index)
+selected_role = st.sidebar.radio("Switch Role As:", ["Attendee", "Organiser"], index=current_role_index, key="role_switcher")
 
 if selected_role == "Attendee" and st.session_state["user_role"] == "Organiser":
     st.session_state["logged_in_user"] = db.users["att1"]
     st.session_state["user_role"] = "Attendee"
-    st.session_state["nav"] = "🔥 Explore Events"
+    st.session_state["nav_choice"] = "🔥 Explore Events"
     st.rerun()
 elif selected_role == "Organiser" and st.session_state["user_role"] == "Attendee":
     st.session_state["logged_in_user"] = db.users["org1"]
     st.session_state["user_role"] = "Organiser"
-    st.session_state["nav"] = "📊 Dashboard & Manage"
+    st.session_state["nav_choice"] = "📊 Dashboard & Manage"
     st.rerun()
 
 # If explicitly logged out or cleared, show auth view
@@ -60,12 +61,20 @@ else:
         else ["🔥 Explore Events", "🎟️ My Bookings", "🚪 Logout"]
     )
 
-    if st.session_state["nav"] not in menu:
-        st.session_state["nav"] = menu[0]
+    # Handle redirection request BEFORE rendering the sidebar radio widget
+    if st.session_state.get("redirect_to_bookings", False):
+        st.session_state["nav_choice"] = "🎟️ My Bookings"
+        st.session_state["redirect_to_bookings"] = False
 
-    default_index = menu.index(st.session_state["nav"])
-    choice = st.sidebar.radio("Navigation", menu, index=default_index)
-    st.session_state["nav"] = choice
+    if st.session_state["nav_choice"] not in menu:
+        st.session_state["nav_choice"] = menu[0]
+
+    # Force the radio widget to respect st.session_state["nav_choice"] via index matching
+    default_index = menu.index(st.session_state["nav_choice"])
+    choice = st.sidebar.radio("Navigation", menu, index=default_index, key="nav_radio")
+    
+    # Keep nav_choice synced if user manually clicks sidebar
+    st.session_state["nav_choice"] = choice
 
     if choice == "🔥 Explore Events":
         explore.render()

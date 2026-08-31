@@ -1,4 +1,7 @@
 # database.py - Full mock store with 10 default events and pre-seeded ticket tiers
+from datetime import datetime, timezone
+
+
 class Event:
     def __init__(
         self,
@@ -45,26 +48,34 @@ class Booking:
     def __init__(
         self,
         booking_id,
-        attendee_id,
-        event_id,
-        event_title,
-        ticket_type_id,
-        ticket_type_name,
-        count,
-        total_price,
-        booking_date,
-        status="Confirmed",
+        user_id=None,
+        event_id=None,
+        ticket_type_id=None,
+        quantity=None,
+        total_price=None,
+        attendee_id=None,
+        event_title=None,
+        ticket_type_name=None,
+        count=None,
+        booking_date=None,
+        status="Confirmed"
     ):
         self.booking_id = booking_id
-        self.attendee_id = attendee_id
+        self.user_id = user_id if user_id is not None else attendee_id
+        self.attendee_id = self.user_id
         self.event_id = event_id
-        self.event_title = event_title
         self.ticket_type_id = ticket_type_id
-        self.ticket_type_name = ticket_type_name
-        self.count = count
+        self.quantity = quantity if quantity is not None else count
+        self.count = self.quantity
         self.total_price = total_price
-        self.booking_date = booking_date
         self.status = status
+        self.event_title = event_title
+        self.ticket_type_name = ticket_type_name
+        self.booking_date = booking_date if booking_date is not None else datetime.now(timezone.utc)
+
+    def cancel_booking(self):
+        # Update the booking status to Cancelled
+        self.status = "Cancelled"
 
 
 class User:
