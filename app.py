@@ -71,6 +71,7 @@ else:
     # Handle redirection request BEFORE rendering the sidebar radio widget
     if st.session_state.get("redirect_to_bookings", False):
         st.session_state["nav_choice"] = "🎟️ My Bookings"
+        st.session_state["nav_radio"] = "🎟️ My Bookings"
         st.session_state["redirect_to_bookings"] = False
 
     if st.session_state["nav_choice"] not in menu:
