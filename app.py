@@ -98,3 +98,4 @@ else:
         organiser.render_view_bookings()
     elif choice == "🚪 Logout":
         auth.logout()
+        

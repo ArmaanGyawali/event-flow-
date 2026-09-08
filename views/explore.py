@@ -81,21 +81,22 @@ def render():
                     if not ev.ticket_types:
                         st.warning("No ticket tiers currently available for this event.")
                     else:
-                        # --- STEP 1: Select Quantities ---
+                        #  STEP 1: Select Quantities 
                         if st.session_state[step_key] == "selecting":
                             st.markdown("Configure quantities for any/all tiers you want to book:")
+                            
 
                             selected_selections = []
-                            total_booking_cost = 0.0
-                            platform_fee = 2.00  # Flat service fee per ticket
+                            tickets_subtotal = 0.0
+                            platform_fee = 2.00  # Flat service fee per booking
 
                             for tier in ev.ticket_types:
-                                cols = st.columns([2, 1, 1])
+                                cols = st.columns([2, 1, 2])
                                 cols[0].markdown(
-                                    f"**{tier.name}** (€{tier.price:.2f} + €2 fee)"
+                                    f"**{tier.name}** (€{tier.price:.2f} per ticket)"
                                 )
-                                cols[1].markdown(f"Left: {tier.available_quantity}")
-                                qty = cols[2].number_input(
+                                cols[0].caption(f"Left: {tier.available_quantity}")
+                                qty = cols[1].number_input(
                                     "Qty",
                                     min_value=0,
                                     max_value=int(tier.available_quantity),
@@ -104,16 +105,29 @@ def render():
                                 )
 
                                 if qty > 0:
-                                    line_price = (tier.price + platform_fee) * qty
+                                    line_price = tier.price * qty
+                                    cols[2].markdown(f"**Subtotal: €{line_price:.2f}**")
                                     selected_selections.append(
                                         {"tier": tier, "qty": qty, "line_total": line_price}
                                     )
-                                    total_booking_cost += line_price
+                                    tickets_subtotal += line_price
+                                else:
+                                    cols[2].caption("-")
 
                             if selected_selections:
+                                total_booking_cost = tickets_subtotal + platform_fee
                                 st.markdown(
-                                    f"### 💶 Combined Total Cost: **€{total_booking_cost:.2f}** (Includes €2.00 fee per ticket)"
+                                    f"Tickets subtotal: €{tickets_subtotal:.2f}"
                                 )
+                                st.markdown(f"Tickets subtotal: €{tickets_subtotal:.2f}")
+                                st.markdown(f"Service fee (per booking): €{platform_fee:.2f}")
+                                st.markdown(
+                                    f"### 💶 Combined Total Cost: **€{total_booking_cost:.2f}**"
+                                )
+                            else:
+                                total_booking_cost = 0.0
+                                
+                                
 
                             if st.button("Proceed to Payment", key=f"proceed_btn_{ev.event_id}"):
                                 if not selected_selections:
