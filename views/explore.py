@@ -81,10 +81,9 @@ def render():
                     if not ev.ticket_types:
                         st.warning("No ticket tiers currently available for this event.")
                     else:
-                        #  STEP 1: Select Quantities 
+                        # --- STEP 1: Select Quantities ---
                         if st.session_state[step_key] == "selecting":
                             st.markdown("Configure quantities for any/all tiers you want to book:")
-                            
 
                             selected_selections = []
                             tickets_subtotal = 0.0
@@ -116,9 +115,6 @@ def render():
 
                             if selected_selections:
                                 total_booking_cost = tickets_subtotal + platform_fee
-                                st.markdown(
-                                    f"Tickets subtotal: €{tickets_subtotal:.2f}"
-                                )
                                 st.markdown(f"Tickets subtotal: €{tickets_subtotal:.2f}")
                                 st.markdown(f"Service fee (per booking): €{platform_fee:.2f}")
                                 st.markdown(
@@ -126,8 +122,6 @@ def render():
                                 )
                             else:
                                 total_booking_cost = 0.0
-                                
-                                
 
                             if st.button("Proceed to Payment", key=f"proceed_btn_{ev.event_id}"):
                                 if not selected_selections:
@@ -168,28 +162,33 @@ def render():
                                         st.error("Please enter a valid CVC/PIN to authorize payment.")
                                     else:
                                         selected_selections = st.session_state.get(f"pending_sel_{ev.event_id}", [])
-                                        booking_summary_ids = []
+                                        items = []
 
                                         for item in selected_selections:
                                             t = item["tier"]
                                             q = item["qty"]
                                             t.available_quantity -= q
+                                            items.append({
+                                                "ticket_type_id": t.ticket_type_id,
+                                                "ticket_type_name": t.name,
+                                                "count": q,
+                                                "line_total": item["line_total"],
+                                            })
 
-                                            b_id = f"bkg_{len(db.bookings) + 1}"
-                                            new_b = db.Booking(
-                                                booking_id=b_id,
-                                                attendee_id=st.session_state["logged_in_user"].user_id,
-                                                event_id=ev.event_id,
-                                                event_title=ev.title,
-                                                ticket_type_id=t.ticket_type_id,
-                                                ticket_type_name=t.name,
-                                                count=q,
-                                                total_price=item["line_total"],
-                                                booking_date=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
-                                                status="Confirmed",
-                                            )
-                                            db.bookings.append(new_b)
-                                            booking_summary_ids.append(b_id)
+                                        # Create ONE booking for the whole checkout, after the loop
+                                        b_id = f"bkg_{len(db.bookings) + 1}"
+                                        new_b = db.Booking(
+                                            booking_id=b_id,
+                                            attendee_id=st.session_state["logged_in_user"].user_id,
+                                            event_id=ev.event_id,
+                                            event_title=ev.title,
+                                            items=items,
+                                            total_price=total_cost,
+                                            booking_date=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
+                                            status="Confirmed",
+                                        )
+                                        db.bookings.append(new_b)
+                                        booking_summary_ids = [b_id]
 
                                         # Clean up checkout states completely
                                         del st.session_state[step_key]
@@ -199,7 +198,7 @@ def render():
                                             del st.session_state[f"pending_cost_{ev.event_id}"]
                                         if f"cvc_{ev.event_id}" in st.session_state:
                                             del st.session_state[f"cvc_{ev.event_id}"]
-                                        
+
                                         # Reset quantity inputs back to 0
                                         for tier in ev.ticket_types:
                                             qty_key = f"tier_qty_{ev.event_id}_{tier.ticket_type_id}"
@@ -207,7 +206,7 @@ def render():
                                                 st.session_state[qty_key] = 0
 
                                         st.success(f"Payment successful! Bookings confirmed: {', '.join(booking_summary_ids)}")
-                                        
+
                                         # Trigger safe navigation flag and rerun
                                         st.session_state["redirect_to_bookings"] = True
                                         st.rerun()
