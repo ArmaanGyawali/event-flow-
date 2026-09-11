@@ -31,7 +31,7 @@ for key, default in [
 
 current_user = st.session_state.get("logged_in_user")
 
-# --- Conditional Test Mode Switcher ---
+# Conditional Test Mode Switcher 
 # Only show the test switcher if no custom user is logged in, 
 # or if it's explicitly using one of the default mock accounts ("att1" / "org1")
 is_default_test_user = current_user and current_user.user_id in ["att1", "org1"]
