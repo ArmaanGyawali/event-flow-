@@ -1,3 +1,4 @@
+Markdown
 # Event Booking Portal
 
 A Streamlit web app for booking and managing events, built for university coursework using Python and object-oriented design.
@@ -19,22 +20,23 @@ working app demo/
 │
 ├── app.py
 ├── database.py
-├── dist/                   # Packaged standalone desktop version
+├── requirements.txt
 └── views/
     ├── auth.py
     ├── explore.py
     ├── bookings.py
     └── organiser.py
-
 How to Run the App
-Option 1: Run as a Standalone Desktop App 
-If you downloaded the repository as a ZIP or cloned it, you can run the pre-packaged application directly:
+Option 1: Run as a Standalone Desktop App (Pre-built Release)
+If you downloaded a pre-packaged release ZIP of the application:
 
-Navigate to the dist/ folder in the project directory.
+Navigate to the dist/ folder in your downloaded directory.
 
 Double-click the compiled application/executable file to launch the app directly like a normal desktop program without needing terminal commands.
 
 Option 2: Run from Source via Terminal
+If you cloned the repository directly from GitHub:
+
 Open your terminal and navigate into the project folder:
 
 Bash
@@ -42,7 +44,7 @@ cd "working app demo"
 Install dependencies:
 
 Bash
-pip install streamlit
+pip install -r requirements.txt
 Run the application:
 
 Bash
