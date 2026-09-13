@@ -2,3 +2,10 @@ dist/
 build/
 .venv/
 .DS_Store
+venv/
+.venv/
+venv-1/
+build/
+dist/
+**/__pycache__/
+uploads/
