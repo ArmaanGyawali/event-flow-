@@ -50,28 +50,41 @@ class Booking:
         booking_id,
         user_id=None,
         event_id=None,
-        ticket_type_id=None,
-        quantity=None,
         total_price=None,
         attendee_id=None,
         event_title=None,
-        ticket_type_name=None,
-        count=None,
         booking_date=None,
-        status="Confirmed"
+        status="Confirmed",
+        items=None,
+        ticket_type_id=None,
+        ticket_type_name=None,
+        count=None,   
     ):
         self.booking_id = booking_id
         self.user_id = user_id if user_id is not None else attendee_id
         self.attendee_id = self.user_id
         self.event_id = event_id
-        self.ticket_type_id = ticket_type_id
-        self.quantity = quantity if quantity is not None else count
-        self.count = self.quantity
         self.total_price = total_price
         self.status = status
         self.event_title = event_title
-        self.ticket_type_name = ticket_type_name
         self.booking_date = booking_date if booking_date is not None else datetime.now(timezone.utc)
+        
+        if items is not None:
+            self.items = items
+        else:
+            #wrap the single tier into a one-item list
+            self.items = [{
+                "ticket_type_id": ticket_type_id,
+                "ticket_type_name": ticket_type_name,
+                "count": count,
+                "line_total": total_price,
+            }]
+            
+        self.ticket_type_id = self.items[0]["ticket_type_id"] if self.items else ticket_type_id
+        self.ticket_type_name = (
+            ", ".join(i["ticket_type_name"] for i in self.items) if self.items else ticket_type_name
+        )
+        self.count = sum(i["count"] for i in self.items) if self.items else count   
 
     def cancel_booking(self):
         # Update the booking status to Cancelled
