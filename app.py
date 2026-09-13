@@ -1,4 +1,4 @@
-# app.py - Main Router with Conditional Test Mode Switcher
+# app.py - Main Router without Test Mode Switcher
 import streamlit as st
 
 import database as db
@@ -20,7 +20,7 @@ st.markdown(
 )
 
 for key, default in [
-    ("logged_in_user", db.users["att1"]),  # Default to demo attendee on fresh load
+    ("logged_in_user", None),  # Start logged out by default
     ("user_role", "Attendee"),
     ("last_booking_success", None),
     ("nav_choice", "🔥 Explore Events"),
@@ -30,27 +30,6 @@ for key, default in [
         st.session_state[key] = default
 
 current_user = st.session_state.get("logged_in_user")
-
-# Conditional Test Mode Switcher 
-# Only show the test switcher if no custom user is logged in, 
-# or if it's explicitly using one of the default mock accounts ("att1" / "org1")
-is_default_test_user = current_user and current_user.user_id in ["att1", "org1"]
-
-if not current_user or is_default_test_user:
-    st.sidebar.markdown("### 🛠️ Test Mode Role Switcher")
-    current_role_index = 0 if st.session_state["user_role"] == "Attendee" else 1
-    selected_role = st.sidebar.radio("Switch Role As:", ["Attendee", "Organiser"], index=current_role_index, key="role_switcher")
-
-    if selected_role == "Attendee" and st.session_state["user_role"] == "Organiser":
-        st.session_state["logged_in_user"] = db.users["att1"]
-        st.session_state["user_role"] = "Attendee"
-        st.session_state["nav_choice"] = "🔥 Explore Events"
-        st.rerun()
-    elif selected_role == "Organiser" and st.session_state["user_role"] == "Attendee":
-        st.session_state["logged_in_user"] = db.users["org1"]
-        st.session_state["user_role"] = "Organiser"
-        st.session_state["nav_choice"] = "📊 Dashboard & Manage"
-        st.rerun()
 
 # If explicitly logged out or cleared, show auth view
 if not current_user:
@@ -71,7 +50,6 @@ else:
     # Handle redirection request BEFORE rendering the sidebar radio widget
     if st.session_state.get("redirect_to_bookings", False):
         st.session_state["nav_choice"] = "🎟️ My Bookings"
-        st.session_state["nav_radio"] = "🎟️ My Bookings"
         st.session_state["redirect_to_bookings"] = False
 
     if st.session_state["nav_choice"] not in menu:
@@ -98,4 +76,3 @@ else:
         organiser.render_view_bookings()
     elif choice == "🚪 Logout":
         auth.logout()
-        
