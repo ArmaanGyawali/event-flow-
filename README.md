@@ -1,37 +1,50 @@
-import os
+# Event Booking Portal
 
-readme_content = """# 🎟️ Event Booking Portal
+A Streamlit web app for booking and managing events, built for university coursework using Python and object-oriented design.
 
-A modular, production-ready **Event Booking Portal** built with **Streamlit**, adhering to UML-based architectural requirements and object-oriented design principles. The platform supports multi-tier ticketing, integrated service fees, real-time inventory management, and role-based access control (RBAC) for Attendees and Event Organisers.
+## Features
 
----
-
-## 🌟 Key Features
-
-### 👤 For Attendees
-- **Explore & Filter Events**: Browse active events by category (Tech, Music, Sports, Conference, etc.) or search dynamically by title, artist, or venue.
-- **Multi-Tier Ticket Checkout**: Purchase multiple ticket quantities across different tiers (e.g., General Admission and VIP Passes) simultaneously in a single checkout flow.
-- **Transparent Pricing**: Automatically calculates flat platform service fees (€2.00) per ticket alongside base tier pricing.
-- **Booking Management**: Track booking history, statuses, and confirmed reservations instantly.
-
-### 📊 For Event Organisers
-- **Event Lifecycle Management**: Create, update, or remove events with custom metadata, venues, dates, and banner images.
-- **Ticket Tier Configuration**: Define and manage multi-tier pricing and seat capacities per event.
-- **Dashboard & Analytics**: Monitor total bookings, revenue metrics, and attendee engagement.
+- **User Roles**: Supports both Attendees and Event Organisers.
+- **Event Discovery**: Search and filter events by category, venue, or title.
+- **Multi-Tier Ticketing**: Buy tickets across different pricing tiers (General Admission, VIP) in a single checkout.
+- **Organiser Tools**: Create new events, manage ticket capacities, and view booking stats.
+- **Service Fees**: Automatically calculates a flat €2.00 fee per ticket.
 
 ---
 
-## 🏗️ System Architecture & Structure
-
-The codebase is organized into a clean, modular structure separating business logic, data models, and UI views:
+## Project Structure
 
 ```text
 working app demo/
 │
-├── app.py                  # Main Streamlit router & session-state controller
-├── database.py             # Object-Oriented models (User, Attendee, EventOrganiser, Event, TicketType, Booking)
+├── app.py
+├── database.py
+├── dist/                   # Packaged standalone desktop version
 └── views/
-    ├── auth.py             # User login and registration interface
-    ├── explore.py          # Event catalog, search/filter, and multi-tier checkout
-    ├── bookings.py         # Attendee booking history and ticket details
-    └── organiser.py        # Organiser dashboard, event creation, and tier management
+    ├── auth.py
+    ├── explore.py
+    ├── bookings.py
+    └── organiser.py
+
+How to Run the App
+Option 1: Run as a Standalone Desktop App 
+If you downloaded the repository as a ZIP or cloned it, you can run the pre-packaged application directly:
+
+Navigate to the dist/ folder in the project directory.
+
+Double-click the compiled application/executable file to launch the app directly like a normal desktop program without needing terminal commands.
+
+Option 2: Run from Source via Terminal
+Open your terminal and navigate into the project folder:
+
+Bash
+cd "working app demo"
+Install dependencies:
+
+Bash
+pip install streamlit
+Run the application:
+
+Bash
+streamlit run app.py
+Open the local URL (http://localhost:8501) displayed in your terminal.
