@@ -1,4 +1,3 @@
-# app.py - Main Router without Test Mode Switcher
 import streamlit as st
 
 import database as db
@@ -58,7 +57,7 @@ else:
     # Force the radio widget to respect st.session_state["nav_choice"] via index matching
     default_index = menu.index(st.session_state["nav_choice"])
     choice = st.sidebar.radio("Navigation", menu, index=default_index, key="nav_radio")
-    
+
     # Keep nav_choice synced if user manually clicks sidebar
     st.session_state["nav_choice"] = choice
 
