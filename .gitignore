@@ -9,3 +9,7 @@ build/
 dist/
 **/__pycache__/
 uploads/
+dist/
+build/
+__pycache__/
+.venv/
