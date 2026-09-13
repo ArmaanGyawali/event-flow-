@@ -1,53 +1,67 @@
-# Event Booking Portal
+# EventFlow - Event Booking Portal
 
-A Streamlit web app for booking and managing events, built for university coursework using Python and object-oriented design.
-
-## Features
-
-- **User Roles**: Supports both Attendees and Event Organisers.
-- **Event Discovery**: Search and filter events by category, venue, or title.
-- **Multi-Tier Ticketing**: Buy tickets across different pricing tiers (General Admission, VIP) in a single checkout.
-- **Organiser Tools**: Create new events, manage ticket capacities, and view booking stats.
-- **Service Fees**: Automatically calculates a flat €2.00 fee per ticket.
+EventFlow is a full-featured Event Booking Portal built using **Streamlit**. It supports both traditional terminal-based development and standalone desktop application packaging for macOS.
 
 ---
 
-## Project Structure
+## Features
 
-```text
-working app demo/
-│
-├── app.py
-├── database.py
-├── run_app.py
-├── requirements.txt
-└── views/
-    ├── auth.py
-    ├── explore.py
-    ├── bookings.py
-    └── organiser.py
+* **Event Discovery & Booking**: Browse available events, view detailed schedules, and manage bookings seamlessly.
+* **Dual Execution Modes**: Run the portal locally via the terminal for development, or launch it as a standalone double-clickable desktop app.
+* **Persistent Database**: Integrated backend tracking for events and user data.
 
-ow to Run the App
-Option 1: Run as a Standalone Desktop App (Pre-built Release)
-If you downloaded a pre-packaged release ZIP of the application:
+---
 
-Navigate to the dist/ folder in your downloaded directory.
+## Prerequisites
 
-Double-click the compiled application executable file to launch the app directly like a normal desktop program without needing terminal commands.
+* **Python 3.10+** installed on your system.
+* **Git** for version control.
 
-Option 2: Run from Source via Terminal
-If you cloned the repository directly from GitHub:
+---
 
-Open your terminal and navigate into the project folder:
+## 1. Local Development (Terminal)
+
+To run the application locally in your browser for development or testing:
+
+* Clone the repository and navigate into the project directory:
+  ```bash
+  cd "working app demo"
+
+Create and activate a virtual environment:
 
 Bash
-cd "working app demo"
-Install dependencies:
+python3 -m venv .venv
+source .venv/bin/activate
+Install the required dependencies:
 
 Bash
 pip install -r requirements.txt
-Run the application via the launcher script:
+Launch the Streamlit development server:
 
 Bash
-streamlit run run_app.py
-Open the local URL (http://localhost:8501) displayed in your terminal.
+streamlit run app.py
+Open your browser and navigate to http://localhost:8501.
+
+2. Standalone Desktop App (macOS)
+To build and run EventFlow as a standalone, double-clickable application executable:
+
+Ensure your virtual environment is active and dependencies are installed.
+
+Build the executable using PyInstaller and the custom configuration spec:
+
+Bash
+pyinstaller run_app.spec
+Open the newly generated dist/ folder inside your project directory.
+
+Double-click the EventFlow application icon to launch it directly.
+
+Repository Structure
+app.py: Core Streamlit application logic and UI.
+
+run_app.py: Application launcher script configured to bypass context errors during standalone packaging.
+
+run_app.spec: PyInstaller build configuration file for bundling EventFlow.
+
+database.py: Database connection and management modules.
+
+requirements.txt: Project Python dependencies.
