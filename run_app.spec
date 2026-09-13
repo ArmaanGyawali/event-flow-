@@ -1,16 +1,24 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = []
+datas = [
+    ('app.py', '.'),
+    ('database.py', '.'),
+]
+
+import os
+if os.path.exists('views'):
+    datas.append(('views', 'views'))
+
 binaries = []
-hiddenimports = []
+hiddenimports = ['database']
+
 tmp_ret = collect_all('streamlit')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('altair')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('pydeck')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
-
 
 a = Analysis(
     ['run_app.py'],
