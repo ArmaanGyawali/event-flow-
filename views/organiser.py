@@ -5,6 +5,8 @@ import streamlit as st
 
 import database as db
 
+from reusable_library import validate_required, validate_date
+
 
 def render_dashboard():
     st.subheader("📊 Organiser Dashboard & Event Management")
@@ -141,11 +143,15 @@ def render_create_event():
         if submitted:
             user_obj = st.session_state.get("logged_in_user")
             org_id = getattr(user_obj, "user_id", getattr(user_obj, "id", "usr_org_1"))
-
-            if not title or not location or not date:
-                st.error("Error: Required event information cannot be empty.")
-            elif not st.session_state["form_tiers"]:
-                st.error("Error: Please include at least one ticket tier.")
+           
+            if not validate_required(title):
+                st.error("Error: Event name cannot be empty.")
+            elif not validate_required(location):
+                st.error("Error: Location cannot be empty.")
+            elif not validate_required(date):
+                 st.error("Error: Event date cannot be empty.")
+            elif not validate_date(date):
+                 st.error("Error: Date must use the format YYYY-MM-DD.")
             else:
                 new_ev = db.Event(
                     f"evt_{len(db.events) + 1}",

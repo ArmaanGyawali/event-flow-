@@ -3,6 +3,11 @@ import streamlit as st
 
 import database as db
 
+from reusable_library import (
+    validate_required,
+    validate_email,
+    validate_password,
+)
 
 def render_login_register():
     st.subheader("🔑 Account Access")
@@ -45,7 +50,7 @@ def render_login_register():
         if "reg_step" not in st.session_state:
             st.session_state["reg_step"] = "details"
 
-        # --- STEP 1: Enter Name, Email, Password ---
+        #STEP 1: Enter Name, Email, Password
         if st.session_state["reg_step"] == "details":
             c1, c2, c3 = st.columns(3)
             r_name = c1.text_input("Full Name", key="r_name")
@@ -54,11 +59,17 @@ def render_login_register():
 
             st.write("")
             if st.button("Next: Choose Role ➡️", use_container_width=True, key="btn_next_role"):
-                if not r_name or not r_email or not r_pass:
-                    st.error("Error: Required fields cannot be empty.")
+                if not validate_required(r_name):
+                    st.error("Error: Full name cannot be empty.")
+                elif validate_required(r_email):
+                    st.error("Error: Email address cannot be empty.")
+                elif not validate_required(r_pass):
+                    st.error("Error: Password cannot be empty.")
+                elif not validate_email(r_email):
+                    st.error("Error: Please enter a valid email address.")
                 elif any(u.email == r_email for u in db.users.values()):
                     st.error(f"Error: An account with email '{r_email}' already exists.")
-                elif len(r_pass) < 4:
+                elif not validate_password(r_pass):
                     st.error("Password must be at least 4 characters long.")
                 else:
                     # Save details temporarily in session state and move to role selection step
@@ -68,7 +79,7 @@ def render_login_register():
                     st.session_state["reg_step"] = "role_selection"
                     st.rerun()
 
-        # --- STEP 2: Choose Role & Finalize Account Creation ---
+        #STEP 2: Choose Role & Finalize Account Creation
         elif st.session_state["reg_step"] == "role_selection":
             st.markdown("### 🛠️ Select Your Account Role")
             st.info(f"Registering account for: **{st.session_state.get('temp_reg_email')}**")
