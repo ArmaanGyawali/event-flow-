@@ -27,6 +27,6 @@ To run and edit this project on your machine, you will need:
 If you want to spin up and test my code on your machine, follow these steps:
 
 1. **Clone the repository:**
-   ```bash
+   ```text
    git clone [https://github.com/ArmaanGyawali/event-flow-.git](https://github.com/ArmaanGyawali/event-flow-.git)
    cd event-flow
