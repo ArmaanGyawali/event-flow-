@@ -28,5 +28,32 @@ If you want to spin up and test my code on your machine, follow these steps:
 
 1. **Clone the repository:**
    ```text
-   git clone [https://github.com/ArmaanGyawali/event-flow-.git](https://github.com/ArmaanGyawali/event-flow-.git)
+   git clone https://github.com/ArmaanGyawali/event-flow-.git
    cd event-flow
+
+Open the project in your code editor (like VS Code):
+
+1. You can open it in VS Code straight from your terminal by running:
+code .
+
+2. Install the required packages:
+Make sure you have Streamlit installed by running this command in your terminal:
+pip install streamlit
+
+3. Run the app:
+Launch the application locally with Streamlit:
+streamlit run app.py
+
+
+📂 Project Structure
+Here is how I organized my codebase:
+
+event-flow/
+│
+├── app.py              # Main entry point, routing, and session navigation state
+├── database.py         # Data models (Events, Bookings, Ticket Types)
+└── views/              # Modular view components
+    ├── auth.py         # Login & Registration views
+    ├── explore.py      # Attendee event exploration
+    ├── bookings.py     # Attendee booking management
+    └── organiser.py    # Organiser dashboard & event controls
