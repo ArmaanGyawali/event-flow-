@@ -27,28 +27,39 @@ To run and edit this project on your machine, you will need:
 If you want to spin up and test my code on your machine, follow these steps:
 
 1. **Clone the repository:**
-   ```text
-   git clone https://github.com/ArmaanGyawali/event-flow-.git
-   cd event-flow
 
-Open the project in your code editor (like VS Code):
+```text
+git clone https://github.com/ArmaanGyawali/event-flow-.git
+cd event-flow
+```
 
-1. You can open it in VS Code straight from your terminal by running:
+2. **Open the project in your code editor (like VS Code):**
+
+You can open it in VS Code straight from your terminal by running:
+
+```text
 code .
+```
 
-2. Install the required packages:
+3. **Install the required packages:**
+
 Make sure you have Streamlit installed by running this command in your terminal:
+
+```text
 pip install streamlit
+```
 
-3. Run the app:
+4. **Run the app:**
+
 Launch the application locally with Streamlit:
+
+```text
 streamlit run app.py
+```
 
+## 📂 Project Structure
 
-📂 Project Structure
 Here is how I organized my codebase:
-
-## Project Structure
 
 ```text
 event-flow/
