@@ -49,7 +49,6 @@ streamlit run app.py
 Here is how I organized my codebase:
 
 event-flow/
-│
 ├── app.py              # Main entry point, routing, and session navigation state
 ├── database.py         # Data models (Events, Bookings, Ticket Types)
 └── views/              # Modular view components
