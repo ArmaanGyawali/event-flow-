@@ -26,10 +26,12 @@ To run and edit this project on your machine, you will need:
 
 If you want to spin up and test my code on your machine, follow these steps:
 
-  1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/ArmaanGyawali/event-flow-.git](https://github.com/ArmaanGyawali/event-flow-.git)
+1. **Clone the repository:**
+
+  ```bash
+   git clone https://github.com/ArmaanGyawali/event-flow-.git
    cd event-flow
+   
 1. Open the project in your code editor (like VS Code):
 You can open it in VS Code straight from your terminal by running:
 
