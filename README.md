@@ -15,30 +15,45 @@ Hey! Welcome to my Event Booking Portal. I built this project as a modular, mult
   - Book tickets smoothly without running into annoying UI reset bugs.
 - **Smart State Management**: I structured the session state carefully to eliminate page-jump glitches and widget state mismatches during state transitions.
 
-## 🛠️ Tech Stack I Used
+## 🛠️ Tech Stack & Requirements
 
-- **Frontend & UI**: Streamlit
-- **Core Logic**: Python
-- **Data Layer**: In-memory architecture using custom Python classes (`database.py`)
+To run and edit this project on your machine, you will need:
+- **Python** (version 3.10 or newer)
+- A code editor like **VS Code** (Visual Studio Code) or PyCharm
+- **Streamlit** (Python library for the web framework)
 
-## 🚀 How to Run My Project Locally
+## 🚀 How to Set Up and Run My Project
 
 If you want to spin up and test my code on your machine, follow these steps:
 
-1. **Clone the repository:**
+  1. **Clone the repository:**
    ```bash
    git clone [https://github.com/ArmaanGyawali/event-flow-.git](https://github.com/ArmaanGyawali/event-flow-.git)
    cd event-flow
+1. Open the project in your code editor (like VS Code):
+You can open it in VS Code straight from your terminal by running:
 
-1. Install Streamlit:
-   pip install streamlit
+Bash
+code .
 
-2. Run the app:
-   streamlit run app.py
+2. Install the required packages:
+Make sure you have Streamlit installed by running this command in your terminal:
+
+Bash
+pip install streamlit
+
+3. Run the app:
+Launch the application locally with Streamlit:
+
+Bash
+streamlit run app.py
+
+
 
 📂 Project Structure
 Here is how I organized my codebase:
 
+Plaintext
 event-flow/
 │
 ├── app.py              # Main entry point, routing, and session navigation state
@@ -48,4 +63,3 @@ event-flow/
     ├── explore.py      # Attendee event exploration
     ├── bookings.py     # Attendee booking management
     └── organiser.py    # Organiser dashboard & event controls
-
