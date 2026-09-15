@@ -1,6 +1,6 @@
 # 🎫 Event Booking Portal
 
-Hey! Welcome to my Event Booking Portal. I built this project as a modular, multi-role web application using **Streamlit** and Python. It handles everything from event creation and multi-tier ticket management to attendee bookings and seamless role-based navigation.
+Hey! Welcome to my Event Booking Portal. I built this project as a modular, multi-role web application using Streamlit and Python. It handles everything from event creation and multi-tier ticket management to attendee bookings and seamless role-based navigation.
 
 ## ✨ What I Built Into This App
 
@@ -27,41 +27,6 @@ To run and edit this project on your machine, you will need:
 If you want to spin up and test my code on your machine, follow these steps:
 
 1. **Clone the repository:**
-
-  ```bash
-   git clone https://github.com/ArmaanGyawali/event-flow-.git
+   ```bash
+   git clone [https://github.com/ArmaanGyawali/event-flow-.git](https://github.com/ArmaanGyawali/event-flow-.git)
    cd event-flow
-   
-1. Open the project in your code editor (like VS Code):
-You can open it in VS Code straight from your terminal by running:
-
-Bash
-code .
-
-2. Install the required packages:
-Make sure you have Streamlit installed by running this command in your terminal:
-
-Bash
-pip install streamlit
-
-3. Run the app:
-Launch the application locally with Streamlit:
-
-Bash
-streamlit run app.py
-
-
-
-📂 Project Structure
-Here is how I organized my codebase:
-
-Plaintext
-event-flow/
-│
-├── app.py              # Main entry point, routing, and session navigation state
-├── database.py         # Data models (Events, Bookings, Ticket Types)
-└── views/              # Modular view components
-    ├── auth.py         # Login & Registration views
-    ├── explore.py      # Attendee event exploration
-    ├── bookings.py     # Attendee booking management
-    └── organiser.py    # Organiser dashboard & event controls
