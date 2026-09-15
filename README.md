@@ -48,6 +48,9 @@ streamlit run app.py
 📂 Project Structure
 Here is how I organized my codebase:
 
+## Project Structure
+
+```text
 event-flow/
 ├── app.py              # Main entry point, routing, and session navigation state
 ├── database.py         # Data models (Events, Bookings, Ticket Types)
@@ -56,3 +59,4 @@ event-flow/
     ├── explore.py      # Attendee event exploration
     ├── bookings.py     # Attendee booking management
     └── organiser.py    # Organiser dashboard & event controls
+```
