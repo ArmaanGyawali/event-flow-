@@ -1,6 +1,6 @@
 # 🎫 Event Booking Portal
 
-Hey! Welcome to my Event Booking Portal. I built this project as a modular, multi-role web application using Streamlit and Python. It handles everything from event creation and multi-tier ticket management to attendee bookings and seamless role-based navigation.
+Hey! Welcome to my Event Booking Portal. I built this project as a modular, multi-role web application using **Streamlit** and Python. It handles everything from event creation and multi-tier ticket management to attendee bookings and seamless role-based navigation.
 
 ## ✨ What I Built Into This App
 
