@@ -1,3 +1,4 @@
+# app.py - Main entry point for the Event Booking Portal
 import streamlit as st
 
 import database as db
@@ -19,10 +20,11 @@ st.markdown(
 )
 
 for key, default in [
-    ("logged_in_user", None),  # Start logged out by default
-    ("user_role", "Attendee"),
+    ("logged_in_user", None),
+    ("user_role", None),
     ("last_booking_success", None),
     ("nav_choice", "🔥 Explore Events"),
+    ("redirect_to_dashboard", False),
     ("redirect_to_bookings", False),
 ]:
     if key not in st.session_state:
@@ -30,7 +32,6 @@ for key, default in [
 
 current_user = st.session_state.get("logged_in_user")
 
-# If explicitly logged out or cleared, show auth view
 if not current_user:
     auth.render_login_register()
 else:
@@ -46,21 +47,30 @@ else:
         else ["🔥 Explore Events", "🎟️ My Bookings", "🚪 Logout"]
     )
 
-    # Handle redirection request BEFORE rendering the sidebar radio widget
-    if st.session_state.get("redirect_to_bookings", False):
-        st.session_state["nav_choice"] = "🎟️ My Bookings"
-        st.session_state["redirect_to_bookings"] = False
-
     if st.session_state["nav_choice"] not in menu:
         st.session_state["nav_choice"] = menu[0]
 
-    # Force the radio widget to respect st.session_state["nav_choice"] via index matching
+    # --- CRITICAL: Handle dashboard redirection BEFORE rendering the sidebar widget ---
+    if st.session_state.get("redirect_to_dashboard", False):
+        st.session_state["nav_choice"] = "📊 Dashboard & Manage"
+        st.session_state["nav_radio"] = "📊 Dashboard & Manage"
+        st.session_state["redirect_to_dashboard"] = False
+
+    if st.session_state.get("redirect_to_bookings", False):
+        st.session_state["nav_choice"] = "🎟️ My Bookings"
+        st.session_state["nav_radio"] = "🎟️ My Bookings"
+        st.session_state["redirect_to_bookings"] = False
+
+    # Ensure the choice is valid in the menu before finding its index
+    if st.session_state["nav_choice"] not in menu:
+        st.session_state["nav_choice"] = menu[0]
+
     default_index = menu.index(st.session_state["nav_choice"])
     choice = st.sidebar.radio("Navigation", menu, index=default_index, key="nav_radio")
 
-    # Keep nav_choice synced if user manually clicks sidebar
     st.session_state["nav_choice"] = choice
 
+    # --- PAGE ROUTING ---
     if choice == "🔥 Explore Events":
         explore.render()
     elif choice == "🎟️ My Bookings":

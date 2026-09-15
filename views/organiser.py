@@ -1,4 +1,4 @@
-# views/organiser.py - Event creation with external image uploader & dynamic tiers
+# views/organiser.py - Event creation, dashboard, and management
 import os
 
 import streamlit as st
@@ -8,7 +8,9 @@ import database as db
 
 def render_dashboard():
     st.subheader("📊 Organiser Dashboard & Event Management")
-    u_id = st.session_state["logged_in_user"].user_id
+    
+    user_obj = st.session_state.get("logged_in_user")
+    u_id = getattr(user_obj, "user_id", getattr(user_obj, "id", None))
 
     for e in db.events:
         if not hasattr(e, "is_deleted"):
@@ -45,18 +47,32 @@ def render_dashboard():
                     
                     col_act1, col_act2 = st.columns(2)
                     with col_act1:
+                        current_status_idx = 0 if ev.status == "Active" else 1
+                        
+                        # Set navigation choice safely
+                        st.session_state["nav_choice"] = "📊 Dashboard & Manage"
+
                         new_status = st.selectbox(
                             "Status",
                             ["Active", "Cancelled"],
-                            index=0 if ev.status == "Active" else 1,
+                            index=current_status_idx,
                             key=f"stat_{ev.event_id}",
                         )
-                        if new_status != ev.status:
-                            ev.status = new_status
-                            st.success("Event status updated!")
-                            st.rerun()
+                        
+                        if st.button("Confirm Status", key=f"btn_stat_{ev.event_id}"):
+                            st.session_state["nav_choice"] = "📊 Dashboard & Manage"
+
+                            if new_status != ev.status:
+                                ev.status = new_status
+                                st.success(f"Event status updated to {new_status}!")
+                                st.rerun()
+                            else:
+                                st.info(f"Event is already {new_status}.")
+
                     with col_act2:
+                        st.write("")
                         if st.button("Delete Event", key=f"del_{ev.event_id}"):
+                            st.session_state["nav_choice"] = "📊 Dashboard & Manage"
                             ev.is_deleted = True
                             st.success("Event deleted and hidden from attendees.")
                             st.rerun()
@@ -69,6 +85,7 @@ def render_dashboard():
             for ev in trash_events:
                 st.markdown(f"### 🗑️ {ev.title} (Deleted)")
                 if st.button("Restore Event", key=f"rest_{ev.event_id}"):
+                    st.session_state["nav_choice"] = "📊 Dashboard & Manage"
                     ev.is_deleted = False
                     st.success("Event restored successfully.")
                     st.rerun()
@@ -81,8 +98,7 @@ def render_create_event():
     if "form_tiers" not in st.session_state:
         st.session_state["form_tiers"] = [{"name": "General Admission", "price": 49.0, "qty": 100}]
 
-    # Image setup outside the form for full interactivity
-    st.markdown("### 🖼️ Event Image Setup")
+    st.markdown("### 🖼️ Image Setup")
     img_source_type = st.radio("Select Image Input Method", ["Paste Image URL", "Upload Image File"], horizontal=True)
     
     final_image_url = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800"
@@ -123,6 +139,9 @@ def render_create_event():
         submitted = st.form_submit_button("Publish Event", use_container_width=True)
 
         if submitted:
+            user_obj = st.session_state.get("logged_in_user")
+            org_id = getattr(user_obj, "user_id", getattr(user_obj, "id", "usr_org_1"))
+
             if not title or not location or not date:
                 st.error("Error: Required event information cannot be empty.")
             elif not st.session_state["form_tiers"]:
@@ -137,7 +156,7 @@ def render_create_event():
                     time,
                     location,
                     final_image_url,
-                    organiser_id=st.session_state["logged_in_user"].user_id,
+                    organiser_id=org_id,
                     artist=artist if artist else "N/A",
                 )
                 
@@ -153,7 +172,8 @@ def render_create_event():
 
                 db.events.append(new_ev)
                 st.session_state["form_tiers"] = [{"name": "General Admission", "price": 49.0, "qty": 100}]
-                st.session_state["nav"] = "📊 Dashboard & Manage"
+                
+                st.session_state["redirect_to_dashboard"] = True
                 st.success("Event successfully created and published! Redirecting to dashboard...")
                 st.rerun()
 
@@ -164,7 +184,9 @@ def render_create_event():
 
 def render_manage_tiers():
     st.subheader("🏷️ Manage Ticket Tiers")
-    u_id = st.session_state["logged_in_user"].user_id
+    user_obj = st.session_state.get("logged_in_user")
+    u_id = getattr(user_obj, "user_id", getattr(user_obj, "id", None))
+    
     my_events = [
         e
         for e in db.events
@@ -206,7 +228,9 @@ def render_manage_tiers():
 
 def render_view_bookings():
     st.subheader("📋 View Event Bookings")
-    u_id = st.session_state["logged_in_user"].user_id
+    user_obj = st.session_state.get("logged_in_user")
+    u_id = getattr(user_obj, "user_id", getattr(user_obj, "id", None))
+    
     my_events = [e for e in db.events if getattr(e, "organiser_id", None) == u_id]
 
     if not my_events:
