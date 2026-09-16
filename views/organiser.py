@@ -4,8 +4,7 @@ import os
 import streamlit as st
 
 import database as db
-
-from reusable_library import validate_required, validate_date
+from reusable_library import validate_date, validate_required
 
 
 def render_dashboard():

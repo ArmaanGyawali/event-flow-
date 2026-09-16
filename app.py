@@ -1,7 +1,6 @@
 # app.py - Main entry point for the Event Booking Portal
 import streamlit as st
 
-import database as db
 from views import auth, bookings, explore, organiser
 
 st.set_page_config(page_title="Event Booking Portal", page_icon="🎫", layout="wide")

@@ -2,12 +2,12 @@
 import streamlit as st
 
 import database as db
-
 from reusable_library import (
-    validate_required,
     validate_email,
     validate_password,
+    validate_required,
 )
+
 
 def render_login_register():
     st.subheader("🔑 Account Access")

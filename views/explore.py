@@ -17,7 +17,7 @@ def render():
     c1, c2 = st.columns([2, 1])
     search_query = c1.text_input("Search events by title or artist...", "").lower()
 
-    categories = ["All"] + list(set(e.category for e in db.events))
+    categories = ["All"] + list({e.category for e in db.events})
     selected_cat = c2.selectbox("Filter by Category", categories)
 
     # Filter events logic
@@ -138,10 +138,9 @@ def render():
                             total_cost = st.session_state.get(f"pending_cost_{ev.event_id}", 0.0)
                             st.info(f"Amount Due: **€{total_cost:.2f}**")
 
-                            pay_method = st.selectbox(
+                            st.selectbox(
                                 "Select Payment Method",
-                                ["Credit Card (**** **** **** 4242)", "PayPal", "Apple Pay"],
-                                key=f"pay_meth_{ev.event_id}"
+                                ["Credit Card (**** **** **** 4242)", "PayPal", "Apple Pay"],  
                             )
                             card_cvc = st.text_input(
                                 "Enter CVC / PIN",

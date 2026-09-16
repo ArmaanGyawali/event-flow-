@@ -1,5 +1,5 @@
 # views/bookings.py
-from datetime import datetime
+from datetime import datetime, timezone
 
 import streamlit as st
 
@@ -21,11 +21,13 @@ def _event_has_passed(ev):
     if ev is None:
         return True
     try:
-        event_date = datetime.strptime(ev.date, "%Y-%m-%d").date()
+        event_date = datetime.strptime(
+            ev.date, "%Y-%m-%d"
+        ).replace(tzinfo=timezone.utc).date()
     except (ValueError, TypeError):
         # If the date can't be parsed, don't block on a bad assumption
         return False
-    return event_date < datetime.now().date()
+    return event_date < datetime.now(timezone.utc).date()
 
 
 def _render_active_booking(b, ev, event_passed):
@@ -44,8 +46,9 @@ def _render_active_booking(b, ev, event_passed):
     - **Status:** {b.status}
     """)
 
-    if not event_passed:
-        if st.button("❌ Cancel Booking", key=f"cancel_{b.booking_id}"):
+    if not event_passed and st.button(
+        "❌ Cancel Booking", key=f"cancel_{b.booking_id}"
+        ):
             b.cancel_booking()
 
             # Restore ticket availability for EVERY tier in this booking
