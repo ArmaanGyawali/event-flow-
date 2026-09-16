@@ -61,7 +61,7 @@ def render_login_register():
             if st.button("Next: Choose Role ➡️", use_container_width=True, key="btn_next_role"):
                 if not validate_required(r_name):
                     st.error("Error: Full name cannot be empty.")
-                elif validate_required(r_email):
+                elif not validate_required(r_email):
                     st.error("Error: Email address cannot be empty.")
                 elif not validate_required(r_pass):
                     st.error("Error: Password cannot be empty.")

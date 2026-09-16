@@ -158,8 +158,9 @@ def render():
 
                             with col_pay:
                                 if st.button("Pay & Confirm Booking", key=f"pay_btn_{ev.event_id}"):
-                                    if not card_cvc or len(card_cvc) < 3:
-                                        st.error("Please enter a valid CVC/PIN to authorize payment.")
+                                    if not card_cvc or not card_cvc.isdigit() or len(card_cvc) not in (3, 4):
+                                       st.error("Please enter a valid CVC (3 or 4 digits).")
+
                                     else:
                                         selected_selections = st.session_state.get(f"pending_sel_{ev.event_id}", [])
                                         items = []
