@@ -90,6 +90,11 @@ def _render_greyed_booking(b, tag):
 
 
 def render():
+    confirmation = st.session_state.pop("booking_confirmation", None)
+
+    if confirmation:
+        st.success(confirmation)
+        
     st.markdown(
         "<div class='main-header'><h1>🎟️ My Bookings</h1></div>",
         unsafe_allow_html=True,

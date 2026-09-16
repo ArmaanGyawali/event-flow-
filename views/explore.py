@@ -206,8 +206,9 @@ def render():
                                             if qty_key in st.session_state:
                                                 st.session_state[qty_key] = 0
 
-                                        st.success(f"Payment successful! Bookings confirmed: {', '.join(booking_summary_ids)}")
-
+                                        st.session_state["booking_confirmation"] = (
+                                            f"Payment successful! Bookings confirmed: {booking_summary_ids}"
+                                        )
                                         # Trigger safe navigation flag and rerun
                                         st.session_state["redirect_to_bookings"] = True
                                         st.rerun()
