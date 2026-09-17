@@ -56,6 +56,19 @@ Launch the application locally with Streamlit:
 ```text
 streamlit run app.py
 ```
+5. **Log in using test credentials:**
+
+You can immediately test both user roles using these pre-seeded accounts without needing to register a new one:
+
+* **Event Organiser:**
+  * **Email:** `org@test.com`
+  * **Password:** `password123`
+
+* **Attendee:**
+  * **Email:** `john@test.com`
+  * **Password:** `password123`
+
+*(Note: The application uses an in-memory database configuration housed in `database.py`, which means pre-seeded events and test accounts are automatically loaded fresh upon every launch.)*
 
 ## 📂 Project Structure
 
