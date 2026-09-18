@@ -1,11 +1,17 @@
 # views/explore.py - Two-step checkout flow with complete state cleanup & safe redirection flag
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
 import streamlit as st
 
 import database as db
 
+def _event_has_passed(event):
+    try:
+        event_date = datetime.strptime(event.date, "%Y-%m-%d").date()
+        return event_date < date.today()
+    except (ValueError, TypeError):
+        return False
 
 def render():
     st.markdown(
@@ -70,6 +76,11 @@ def render():
                 if getattr(ev, "artist", "N/A") != "N/A":
                     st.markdown(f"🎤 **Featured:** {ev.artist}")
                 st.write(ev.description)
+                
+                event_passed = _event_has_passed(ev)
+
+                if event_passed:
+                   st.warning("⚠️ This event has already passed. Tickets can no longer be booked.")
 
                 # Track checkout step per event using session state
                 step_key = f"checkout_step_{ev.event_id}"
@@ -123,7 +134,7 @@ def render():
                             else:
                                 total_booking_cost = 0.0
 
-                            if st.button("Proceed to Payment", key=f"proceed_btn_{ev.event_id}"):
+                            if st.button("Proceed to Payment", key=f"proceed_btn_{ev.event_id}", disabled=event_passed):
                                 if not selected_selections:
                                     st.error("Please select at least one ticket quantity to book.")
                                 else:
@@ -157,7 +168,9 @@ def render():
 
                             with col_pay:
                                 if st.button("Pay & Confirm Booking", key=f"pay_btn_{ev.event_id}"):
-                                    if not card_cvc or not card_cvc.isdigit() or len(card_cvc) not in (3, 4):
+                                    if _event_has_passed(ev):
+                                        st.error("This event has already passed. The booking cannot complete")
+                                    elif not card_cvc or not card_cvc.isdigit() or len(card_cvc) not in (3, 4):
                                        st.error("Please enter a valid CVC (3 or 4 digits).")
 
                                     else:
